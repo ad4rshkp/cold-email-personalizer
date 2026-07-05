@@ -26,6 +26,7 @@ if uploaded_file is not None:
             raw_text = scrape_website(row["website"])
             cleaned_text = clean_text(raw_text)
             email_opener = generate_email(cleaned_text)
+            lead_score = score_lead(cleaned_text)
 
             email_openers.append(email_opener)
 

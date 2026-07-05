@@ -1,3 +1,4 @@
+import time
 import streamlit as st
 import os
 from dotenv import load_dotenv
@@ -25,12 +26,18 @@ def generate_email(company_info):
     Do not include a subject line or sign-off, just the opener.
     """
 
-    response = client.models.generate_content(
-        model="gemini-2.5-flash",
-        contents=prompt
-    )
+    for attempt in range(3):
+        try:
+            response = client.models.generate_content(
+                model="gemini-2.5-flash-lite",
+                contents=prompt
+            )
+            return response.text
+        except Exception as e:
+            print(f"Attempt {attempt + 1} failed, retrying in 10 seconds...")
+            time.sleep(10)
 
-    return response.text
+    return "Error: Could not generate email after multiple attempts."
 
 
 def score_lead(company_info):
@@ -47,12 +54,18 @@ def score_lead(company_info):
     Reason: <one short sentence explaining why>
     """
 
-    response = client.models.generate_content(
-        model="gemini-2.5-flash",
-        contents=prompt
-    )
+    for attempt in range(3):
+        try:
+            response = client.models.generate_content(
+                model="gemini-2.5-flash-lite",
+                contents=prompt
+            )
+            return response.text
+        except Exception as e:
+            print(f"Attempt {attempt + 1} failed, retrying in 10 seconds...")
+            time.sleep(10)
 
-    return response.text
+    return "Error: Could not generate email after multiple attempts."
 
 
 if __name__ == "__main__":

@@ -1,7 +1,8 @@
+import time
 import csv
 from scraper import scrape_website
 from enrich import clean_text
-from personalize import generate_email
+from personalize import generate_email, score_lead
 from output import save_results
 
 
@@ -24,9 +25,12 @@ def run_pipeline():
         raw_text = scrape_website(lead["website"])
         cleaned_text = clean_text(raw_text)
         email_opener = generate_email(cleaned_text)
+        lead_score = score_lead(cleaned_text)
 
         lead["email_opener"] = email_opener
+        lead["lead_score"] = lead_score
         results.append(lead)
+        time.sleep(5)
 
     save_results(results)
     print("\nAll done! Check data/output.csv for your personalized emails.")
