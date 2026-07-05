@@ -33,6 +33,28 @@ def generate_email(company_info):
     return response.text
 
 
+def score_lead(company_info):
+    prompt = f"""
+    You are a sales analyst. Based on the following company information, 
+    rate how good a fit this company is for a sales automation and CRM tool, 
+    on a scale of 1 to 10 (10 = excellent fit, 1 = poor fit).
+
+    Company information:
+    {company_info}
+
+    Respond in EXACTLY this format, nothing else:
+    Score: <number>
+    Reason: <one short sentence explaining why>
+    """
+
+    response = client.models.generate_content(
+        model="gemini-2.5-flash",
+        contents=prompt
+    )
+
+    return response.text
+
+
 if __name__ == "__main__":
     from scraper import scrape_website
     from enrich import clean_text
@@ -43,3 +65,7 @@ if __name__ == "__main__":
 
     print("----- GENERATED EMAIL OPENER -----")
     print(email)
+    score = score_lead(cleaned)
+
+    print("\n----- LEAD SCORE -----")
+    print(score)
