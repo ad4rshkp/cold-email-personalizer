@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 from scraper import scrape_website
 from enrich import clean_text
-from personalize import generate_email
+from personalize import generate_email, score_lead
 
 st.title("Cold Email Personalizer")
 st.write("Upload a CSV of leads and get AI-personalized email openers for each one.")
@@ -20,6 +20,8 @@ if uploaded_file is not None:
 
         email_openers = []
 
+        lead_scores = []
+
         for index, row in leads_df.iterrows():
             st.write(f"Processing {row['name']} at {row['company']}...")
 
@@ -29,8 +31,10 @@ if uploaded_file is not None:
             lead_score = score_lead(cleaned_text)
 
             email_openers.append(email_opener)
+            lead_scores.append(lead_score)
 
         leads_df["email_opener"] = email_openers
+        leads_df["lead_score"] = lead_scores
 
         st.success("All done! Here are your personalized emails:")
         st.dataframe(leads_df)
