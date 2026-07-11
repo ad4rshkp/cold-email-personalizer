@@ -21,6 +21,38 @@ def init_db():
     conn.close()
 
 
+def save_lead(lead):
+    conn = sqlite3.connect("data/leads.db")
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        INSERT INTO leads (name, company, title, website, email_opener, lead_score)
+        VALUES (?, ?, ?, ?, ?, ?)
+    """, (
+        lead["name"],
+        lead["company"],
+        lead["title"],
+        lead["website"],
+        lead["email_opener"],
+        lead["lead_score"]
+    ))
+
+    conn.commit()
+    conn.close()
+
+
+def view_all_leads():
+    conn = sqlite3.connect("data/leads.db")
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT * FROM leads")
+    rows = cursor.fetchall()
+
+    for row in rows:
+        print(row)
+
+    conn.close()
+
+
 if __name__ == "__main__":
-    init_db()
-    print("Database initialized successfully!")
+    view_all_leads()
