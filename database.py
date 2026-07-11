@@ -1,4 +1,12 @@
 import sqlite3
+import pandas as pd
+
+
+def get_all_leads_as_dataframe():
+    conn = sqlite3.connect("data/leads.db")
+    df = pd.read_sql_query("SELECT * FROM leads", conn)
+    conn.close()
+    return df
 
 
 def init_db():

@@ -3,10 +3,10 @@ import pandas as pd
 from scraper import scrape_website
 from enrich import clean_text
 from personalize import generate_email, score_lead
+from database import init_db, save_lead, get_all_leads_as_dataframe
 
 st.title("Cold Email Personalizer")
 st.write("Upload a CSV of leads and get AI-personalized email openers for each one.")
-
 
 uploaded_file = st.file_uploader("Upload your leads CSV", type=["csv"])
 
@@ -19,7 +19,6 @@ if uploaded_file is not None:
         st.write("Processing leads... this may take a moment.")
 
         email_openers = []
-
         lead_scores = []
 
         for index, row in leads_df.iterrows():
@@ -36,6 +35,10 @@ if uploaded_file is not None:
         leads_df["email_opener"] = email_openers
         leads_df["lead_score"] = lead_scores
 
+        init_db()
+        for index, row in leads_df.iterrows():
+            save_lead(row.to_dict())
+
         st.success("All done! Here are your personalized emails:")
         st.dataframe(leads_df)
 
@@ -46,3 +49,10 @@ if uploaded_file is not None:
             file_name="personalized_leads.csv",
             mime="text/csv"
         )
+
+st.divider()
+st.subheader("Lead History")
+
+if st.button("Show All Saved Leads"):
+    history_df = get_all_leads_as_dataframe()
+    st.dataframe(history_df)
